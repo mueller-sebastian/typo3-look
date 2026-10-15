@@ -22,11 +22,11 @@ class PublicResourceUri
 
     public function resolve(string $pathOrUrl): string
     {
-        if (!str_starts_with($pathOrUrl, 'EXT:')) {
-            return $pathOrUrl;
-        }
         if (!$this->hasSystemResourceApi()) {
-            return PathUtility::getPublicResourceWebPath($pathOrUrl);
+            return str_starts_with($pathOrUrl, 'EXT:') ? PathUtility::getPublicResourceWebPath($pathOrUrl) : $pathOrUrl;
+        }
+        if (!preg_match('/^(EXT|PKG|FAL|URI):/', $pathOrUrl)) {
+            return $pathOrUrl;
         }
         $this->systemResourceFactory ??= GeneralUtility::makeInstance(SystemResourceFactory::class);
         $this->resourcePublisher ??= GeneralUtility::makeInstance(SystemResourcePublisherInterface::class);
